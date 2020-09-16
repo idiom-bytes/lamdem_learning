@@ -104,7 +104,7 @@ async def submit_transaction(request):
 
     # I believe kwargs have to be transformed into a dict.
     # So we must import json, and call loads(string).
-    kwargs = json.loads(request.json.get('args'))
+    kwargs = request.json.get('args')
     sender = request.json.get('sender')
 
     # Set the sender
@@ -125,7 +125,8 @@ async def submit_transaction(request):
         method(**kwargs)
         return response.json({'status': 0})
     except Exception as err:
-        return response.json({'status': 1, 'error': err})
+        # ONBOARDING FIX: Return response should dereference err.args[0]
+        return response.json({'status': 1, 'error': err.args[0]})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3737)
